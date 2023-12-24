@@ -30,3 +30,20 @@ function getIntersection(line1, line2) {
         return null;
     }
 }
+
+function polyIntersect(poly1, poly2) {
+    for (const pointPoly1Index in poly1) {
+        for (const pointPoly2Index in poly2) {
+
+            const poly1Line = [poly1[pointPoly1Index], poly1[(pointPoly1Index + 1) % poly1.length]]
+            const poly2Line = [poly2[pointPoly2Index], poly2[(pointPoly2Index + 1) % poly2.length]]
+
+            const intersection = getIntersection(poly1Line, poly2Line)
+            if (intersection) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}

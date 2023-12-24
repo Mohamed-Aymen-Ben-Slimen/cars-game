@@ -5,6 +5,8 @@ class Car {
             y = 0,
             width = 100,
             height = 100,
+            maxSpeed = 3,
+            controlActive = false
         }
     ) {
         this.x = x;
@@ -13,21 +15,37 @@ class Car {
         this.height = height;
 
         this.speed = 0;
-        this.acceleration = 0.4;
-        this.maxSpeed = 3;
+        this.acceleration = 0.1;
+        this.maxSpeed = maxSpeed;
         this.friction = 0.05;
 
         this.angle = 0;
 
-        this.controls = new Controls();
+        this.controls = new Controls(controlActive);
         this.sensor = new Sensor({ car: this });
         this.polygon = this._createPolygon();
+
+        this.damaged = false;
     }
 
     update({ roadBorders }) {
-        this._move();
-        this.polygon = this._createPolygon();
+        if (!this.damaged) {
+            this._move();
+            this.polygon = this._createPolygon(roadBorders);
+            this.damaged = this._assessDamage(roadBorders);
+        }
+
         this.sensor.update(roadBorders);
+    }
+
+    _assessDamage(roadBorders) {
+        for (const border of roadBorders) {
+            if (polyIntersect(this.polygon, border)) {
+                return true
+            }
+        }
+
+        return false
     }
 
     _createPolygon() {
@@ -111,6 +129,12 @@ class Car {
     }
 
     draw(ctx) {
+        if (this.damaged) {
+            ctx.fillStyle = 'red';
+        } else {
+            ctx.fillStyle = 'black';
+        }
+
         this._drawPolygon(ctx)
         this.sensor.draw(ctx);
     }

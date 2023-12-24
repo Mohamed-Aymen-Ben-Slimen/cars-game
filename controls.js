@@ -1,11 +1,15 @@
 class Controls {
-    constructor() {
+    constructor(controlsActive = false) {
         this.left = false;
         this.right = false;
         this.forward = false;
         this.reserse = false;
 
-        this._addKeybbordListeners();
+        if (controlsActive) {
+            this._addKeybbordListeners();
+        } else {
+            this.forward = true;
+        }
     }
 
     _addKeybbordListeners() {
