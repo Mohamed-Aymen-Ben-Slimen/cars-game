@@ -47,14 +47,12 @@ class Car {
     _assessDamage(roadBorders, traffic) {
         for (const border of roadBorders) {
             if (polyIntersect(this.polygon, border)) {
-                console.log('Damaged from road')
                 return true
             }
         }
 
         for (const trafficCar of traffic) {
             if (polyIntersect(this.polygon, trafficCar.polygon)) {
-                console.log('Damaged from traffic')
                 return true
             }
         }

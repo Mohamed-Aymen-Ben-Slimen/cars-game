@@ -8,7 +8,10 @@ const road = new Road({ x: canvas.width / 2, width: canvas.width, laneCount: 3 }
 const car = new Car({ x: road.getLineCenter(1), y: 100, width: 30, height: 50, controlActive: true });
 
 const traffic = [
-    new Car({ x: road.getLineCenter(0), y: 0, width: 30, height: 50, maxSpeed: 2, color: "blue" }),
+    new Car({ x: road.getLineCenter(0), y: 60, width: 30, height: 50, maxSpeed: 2, color: "blue" }),
+    new Car({ x: road.getLineCenter(1), y: 30, width: 30, height: 50, maxSpeed: 2.2, color: "blue" }),
+    new Car({ x: road.getLineCenter(2), y: 20, width: 30, height: 50, maxSpeed: 2.4, color: "blue" }),
+
 ]
 
 function animate() {

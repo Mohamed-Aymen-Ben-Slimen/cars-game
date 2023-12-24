@@ -36,7 +36,6 @@ function polyIntersect(poly1, poly2) {
 
             const intersection = getIntersection(poly1Line, poly2Line)
             if (intersection) {
-                console.log('Intersection', { intersection, poly1Line, poly2Line })
                 return true;
             }
         }
