@@ -25,16 +25,16 @@ class Sensor {
         }
     }
 
-    update(roadBorders) {
+    update(roadBorders, traffic) {
         this._castRays();
 
         this.readings = [];
         for (const ray of this.rays) {
-            this.readings.push(this._getReading(ray, roadBorders));
+            this.readings.push(this._getReading(ray, roadBorders, traffic));
         }
     }
 
-    _getReading(ray, roadBorders) {
+    _getReading(ray, roadBorders, traffic) {
         let intersections = [];
 
         for (const border of roadBorders) {
@@ -44,14 +44,23 @@ class Sensor {
             }
         }
 
+        for (const trafficCar of traffic) {
+            if (trafficCar != this.car) {
+                const intersection = getIntersection(ray, trafficCar.polygon);
+                if (intersection) {
+                    intersections.push(intersection);
+                }
+            }
+        }
+
         if (intersections.length == 0) {
             return null;
         }
 
         const sortedIntersections = intersections.sort((a, b) => {
-            const distanceA = getDistance(ray[0], a);
-            const distanceB = getDistance(ray[0], b);
-            return distanceA - distanceB;
+            const distanceA = Math.abs(ray[0].x - a.x) + Math.abs(ray[0].y - a.y)
+            const distanceB = Math.abs(ray[1].x - b.x) + Math.abs(ray[1].y - b.y)
+            return Math.abs(distanceA - distanceB);
         });
 
         return sortedIntersections[0];
@@ -73,7 +82,7 @@ class Sensor {
             ctx.stroke();
 
             ctx.lineWidth = 1;
-            ctx.strokeStyle = 'grey';
+            ctx.strokeStyle = 'red';
             ctx.beginPath();
             ctx.setLineDash([20, 2]);
             ctx.moveTo(end.x, end.y);

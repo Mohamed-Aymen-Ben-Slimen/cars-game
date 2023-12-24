@@ -8,7 +8,7 @@ const road = new Road({ x: canvas.width / 2, width: canvas.width, laneCount: 3 }
 const car = new Car({ x: road.getLineCenter(1), y: 100, width: 30, height: 50, controlActive: true });
 
 const traffic = [
-    new Car({ x: road.getLineCenter(0), y: 0, width: 30, height: 50, maxSpeed: 2 }),
+    new Car({ x: road.getLineCenter(0), y: 0, width: 30, height: 50, maxSpeed: 2, color: "blue" }),
 ]
 
 function animate() {
@@ -17,7 +17,7 @@ function animate() {
         car.update({ roadBorders: road.borders });
     }
 
-    car.update({ roadBorders: road.borders });
+    car.update({ roadBorders: road.borders, traffic });
 
     canvas.height = window.innerHeight;
 

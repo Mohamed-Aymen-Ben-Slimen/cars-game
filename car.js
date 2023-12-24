@@ -6,13 +6,15 @@ class Car {
             width = 100,
             height = 100,
             maxSpeed = 3,
-            controlActive = false
+            controlActive = false,
+            color = 'black'
         }
     ) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.color = color;
 
         this.speed = 0;
         this.acceleration = 0.1;
@@ -22,25 +24,37 @@ class Car {
         this.angle = 0;
 
         this.controls = new Controls(controlActive);
-        this.sensor = new Sensor({ car: this });
+
+        if (controlActive) {
+            this.sensor = new Sensor({ car: this });
+        }
+
         this.polygon = this._createPolygon();
 
         this.damaged = false;
     }
 
-    update({ roadBorders }) {
+    update({ roadBorders, traffic = [] }) {
         if (!this.damaged) {
             this._move();
             this.polygon = this._createPolygon(roadBorders);
-            this.damaged = this._assessDamage(roadBorders);
+            this.damaged = this._assessDamage(roadBorders, traffic);
         }
 
-        this.sensor.update(roadBorders);
+        this.sensor?.update(roadBorders, traffic);
     }
 
-    _assessDamage(roadBorders) {
+    _assessDamage(roadBorders, traffic) {
         for (const border of roadBorders) {
             if (polyIntersect(this.polygon, border)) {
+                console.log('Damaged from road')
+                return true
+            }
+        }
+
+        for (const trafficCar of traffic) {
+            if (polyIntersect(this.polygon, trafficCar.polygon)) {
+                console.log('Damaged from traffic')
                 return true
             }
         }
@@ -119,6 +133,11 @@ class Car {
     }
 
     _drawPolygon(ctx) {
+        if (this.damaged) {
+            ctx.fillStyle = 'red';
+        } else {
+            ctx.fillStyle = this.color;
+        }
         ctx.beginPath();
         ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
         for (let pointIndex = 1; pointIndex < this.polygon.length; pointIndex++) {
@@ -129,13 +148,7 @@ class Car {
     }
 
     draw(ctx) {
-        if (this.damaged) {
-            ctx.fillStyle = 'red';
-        } else {
-            ctx.fillStyle = 'black';
-        }
-
         this._drawPolygon(ctx)
-        this.sensor.draw(ctx);
+        this.sensor?.draw(ctx);
     }
 }

@@ -3,32 +3,28 @@ function lerp(a, b, t) {
 }
 
 function getIntersection(line1, line2) {
-    const x1 = line1[0].x;
-    const y1 = line1[0].y;
-    const x2 = line1[1].x;
-    const y2 = line1[1].y;
-    const x3 = line2[0].x;
-    const y3 = line2[0].y;
-    const x4 = line2[1].x;
-    const y4 = line2[1].y;
+    const A = line1[0]
+    const B = line1[1]
+    const C = line2[0];
+    const D = line2[1];
 
-    const denominator = ((x1 - x2) * (y3 - y4)) - ((y1 - y2) * (x3 - x4));
+    const tTop = (D.x - C.x) * (A.y - C.y) - (D.y - C.y) * (A.x - C.x);
+    const uTop = (C.y - A.y) * (A.x - B.x) - (C.x - A.x) * (A.y - B.y);
+    const bottom = (D.y - C.y) * (B.x - A.x) - (D.x - C.x) * (B.y - A.y);
 
-    if (denominator == 0) {
-        return null;
+    if (bottom != 0) {
+        const t = tTop / bottom;
+        const u = uTop / bottom;
+        if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+            return {
+                x: lerp(A.x, B.x, t),
+                y: lerp(A.y, B.y, t),
+                offset: t
+            }
+        }
     }
 
-    const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
-    const u = -(((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3))) / denominator;
-
-    if (t > 0 && t < 1 && u > 0) {
-        return {
-            x: x1 + t * (x2 - x1),
-            y: y1 + t * (y2 - y1),
-        };
-    } else {
-        return null;
-    }
+    return null;
 }
 
 function polyIntersect(poly1, poly2) {
@@ -40,6 +36,7 @@ function polyIntersect(poly1, poly2) {
 
             const intersection = getIntersection(poly1Line, poly2Line)
             if (intersection) {
+                console.log('Intersection', { intersection, poly1Line, poly2Line })
                 return true;
             }
         }
