@@ -1,5 +1,5 @@
 class Sensor {
-    constructor({ car, rayCount = 10, rayLength = 100, raySpread = Math.PI / 1.05 }) {
+    constructor({ car, rayCount = 9, rayLength = 100, raySpread = Math.PI / 1.05 }) {
         this.car = car;
         this.rayCount = rayCount;
         this.rayLength = rayLength;
@@ -11,16 +11,20 @@ class Sensor {
 
     _castRays() {
         this.rays = [];
-
         for (let i = 0; i < this.rayCount; i++) {
-            const angle = lerp(this.raySpread / 2, -this.raySpread / 2, i / (this.rayCount - 1));
+            const rayAngle = lerp(
+                this.raySpread / 2,
+                -this.raySpread / 2,
+                this.rayCount == 1 ? 0.5 : i / (this.rayCount - 1)
+            ) + this.car.angle;
 
             const start = { x: this.car.x, y: this.car.y };
             const end = {
-                x: start.x + Math.sin(this.car.angle + angle) * this.rayLength,
-                y: start.y - Math.cos(this.car.angle + angle) * this.rayLength,
+                x: this.car.x -
+                    Math.sin(rayAngle) * this.rayLength,
+                y: this.car.y -
+                    Math.cos(rayAngle) * this.rayLength
             };
-
             this.rays.push([start, end]);
         }
     }
@@ -45,25 +49,26 @@ class Sensor {
         }
 
         for (const trafficCar of traffic) {
-            if (trafficCar != this.car) {
-                const intersection = getIntersection(ray, trafficCar.polygon);
+            for (const pointIndex in trafficCar.polygon) {
+
+                const line = [trafficCar.polygon[pointIndex], trafficCar.polygon[(pointIndex + 1) % trafficCar.polygon.length]];
+
+                const intersection = getIntersection(ray, line);
                 if (intersection) {
                     intersections.push(intersection);
                 }
             }
+
         }
 
         if (intersections.length == 0) {
             return null;
         }
 
-        const sortedIntersections = intersections.sort((a, b) => {
-            const distanceA = Math.abs(ray[0].x - a.x) + Math.abs(ray[0].y - a.y)
-            const distanceB = Math.abs(ray[1].x - b.x) + Math.abs(ray[1].y - b.y)
-            return Math.abs(distanceA - distanceB);
-        });
+        const minOffset = Math.min(...intersections.map(intersection => intersection.offset));
+        const minIntersection = intersections.find(intersection => intersection.offset == minOffset);
 
-        return sortedIntersections[0];
+        return minIntersection;
     }
 
     draw(ctx) {
