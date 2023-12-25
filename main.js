@@ -1,4 +1,4 @@
-const N = 1;
+const N = 100;
 
 const carCanvas = document.getElementById('car-canvas');
 carCanvas.width = window.innerWidth / 3;
