@@ -1,4 +1,4 @@
-const N = 10;
+const N = 1;
 
 const carCanvas = document.getElementById('car-canvas');
 carCanvas.width = window.innerWidth / 3;
@@ -15,7 +15,10 @@ const cars = generateCars(N);
 
 const traffic = [
     new Car({ x: road.getLineCenter(0), y: -60, width: 30, height: 50, maxSpeed: 2, color: "blue" }),
-    new Car({ x: road.getLineCenter(1), y: -80, width: 30, height: 50, maxSpeed: 2.2, color: "blue" }),
+    new Car({ x: road.getLineCenter(2), y: -190, width: 30, height: 50, maxSpeed: 2.2, color: "blue" }),
+    new Car({ x: road.getLineCenter(2), y: -250, width: 30, height: 50, maxSpeed: 2.2, color: "blue" }),
+    new Car({ x: road.getLineCenter(1), y: -380, width: 30, height: 50, maxSpeed: 2.2, color: "blue" }),
+    new Car({ x: road.getLineCenter(0), y: -380, width: 30, height: 50, maxSpeed: 2.2, color: "blue" }),
 ]
 
 let bestCar = cars[0];
@@ -27,7 +30,7 @@ if (localStorage.getItem('bestCar')) {
     cars[0].brain = brain;
     for (let i = 1; i < cars.length; i++) {
 
-        const mutatedBrain = NeuralNetwork.mutate(brain, 0.2);
+        const mutatedBrain = NeuralNetwork.mutate(brain, 0.3);
         cars[i].brain = mutatedBrain;
 
         if (_.isEqual(mutatedBrain, brain)) {

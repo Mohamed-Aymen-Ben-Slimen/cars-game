@@ -28,7 +28,7 @@ class NNVisualizer {
                 left, levelTop,
                 width, levelHeight,
                 i == network.layers.length - 1
-                    ? ['🠉', '🠈', '🠊', '🠋']
+                    ? [] //['🠉', '🠈', '🠊', '🠋']
                     : []
             );
         }

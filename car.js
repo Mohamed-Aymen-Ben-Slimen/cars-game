@@ -5,7 +5,7 @@ class Car {
             y = 0,
             width = 100,
             height = 100,
-            maxSpeed = 3,
+            maxSpeed = 4,
             controlActive = false,
             color = 'black',
             useBrain = false
@@ -18,9 +18,9 @@ class Car {
         this.color = color;
 
         this.speed = 0;
-        this.acceleration = 0.1;
+        this.acceleration = 0.2;
         this.maxSpeed = maxSpeed;
-        this.friction = 0.05;
+        this.friction = 0.1;
 
         this.angle = 0;
 
